@@ -1,37 +1,60 @@
 #!/usr/bin/env python
 #vannstand.py
 from urllib2 import urlopen
+import datetime 
 
-url = "http://api.sehavniva.no/tideapi.php?"
+today = datetime.datetime.now()
+tomorrow = today + datetime.timedelta(days=1)
+
+
+# tide_reqest [stationlist,standardlevels,locationlevels,constituents,obstime,stattime,monthmean,locationdata,tidetable,
+# landsearise,languages,service,fileformats]
+tide_request = "locationdata"
+#lang [nb,nn,en,de,nl,se]
 lang="nb"
+#Position
 lat = "60.395859"
 lon = "5.329224"
-fromtime = "2015-05-30T00%3A00"
-totime = "2015-05-31T00%3A00"
-datatype = "tab"
+#To from date in ISO-8601 
+fromtime = today.isoformat()
+totime = tomorrow.isoformat()
+# datatype [TAB,PRE,OBS,ALL]
+datatype = "TAB"
 refcode = "cd"
 place = ""
+#"",PDF,XLS,NSKV,TXT(undocumented)
 api_file = ""
 interval = "10"
 dts = ""
 tzone = ""
-tide_request = "locationdata"
 
-url += "?lang=" + lang
-url += "&lat=" + lat
-url += "&lon=" + lon
-url += "&fromtime=" + fromtime
-url += "&totime=" + totime
-url += "&datatype=" + datatype
-url += "&refcode=" + refcode
-url += "&place=" + place
-url += "&file=" + api_file
-url += "&interval=" + interval
-url += "&dst=" + dts
-url += "&tzone=" + tzone
-url += "&tide_request=" + tide_request
+url = "http://api.sehavniva.no/tideapi.php?"
+if tide_request == "locationdata" and lat and lon:
+	url += "&tide_request=" + tide_request
+	url += "&lat=" + lat
+	url += "&lon=" + lon
+	url += "&fromtime=" + fromtime
+	url += "&totime=" + totime 
+	if datatype:
+		url += "&datatype=" + datatype
+	if lang:
+		url += "&lang=" + lang
+	if refcode:
+		url += "&refcode=" + refcode
+	if place:
+		url += "&place=" + place
+	if api_file:
+		url += "&file=" + api_file
+	if interval:
+		url += "&interval=" + interval
+	if dts:
+		url += "&dst=" + dts
+	if tzone:
+		url += "&tzone=" + tzone
+else:
+	print "ERROR"
 
-print url
+# print url
 response = urlopen(url)
 output = response.read()
 
