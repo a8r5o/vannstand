@@ -2,10 +2,10 @@
 #vannstand.py
 from urllib2 import urlopen
 import datetime 
+import xml.etree.ElementTree as etree  
 
-today = datetime.datetime.now()
+today = datetime.date.today()
 tomorrow = today + datetime.timedelta(days=1)
-
 
 # tide_reqest [stationlist,standardlevels,locationlevels,constituents,obstime,stattime,monthmean,locationdata,tidetable,
 # landsearise,languages,service,fileformats]
@@ -51,11 +51,11 @@ if tide_request == "locationdata" and lat and lon:
 		url += "&dst=" + dts
 	if tzone:
 		url += "&tzone=" + tzone
-else:
-	print "ERROR"
 
-# print url
 response = urlopen(url)
-output = response.read()
+xml = response.read()
 
-print output
+print xml + "\n"
+
+tree = etree.parse(xml)
+
